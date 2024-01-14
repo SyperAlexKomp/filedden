@@ -3,11 +3,13 @@ import logging
 import asyncpg
 from asyncpg import Connection
 
+from api.database.repos.users import UsersRepo
+
 
 class Repo:
     async def connect(self, *,
                  user: str, password: str,
-                 database: str, host: str, port: int) -> bool:
+                 database: str, host: str, port: int = None) -> bool:
         try:
             self.con: Connection = await asyncpg.connect(host=host, port=port,
                                                          user=user, password=password,
@@ -30,4 +32,9 @@ class Repo:
     # TODO Создание всех таблиц сразу
     async def create_tables(self) -> bool:
         pass
+
+
+    @property
+    def users(self) -> UsersRepo:
+        return UsersRepo(connection=self.con)
         
